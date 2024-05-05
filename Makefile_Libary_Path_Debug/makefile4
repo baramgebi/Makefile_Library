@@ -1,0 +1,35 @@
+export LANG	= en
+CC       	= gcc
+CFLAGS 		= -c -g
+LDFLAGS		= -o
+LFLAGS		= -L/home/test -L../lib
+INCLUDE		= -I../include
+
+SRCDIR 		:= $(CURDIR)
+OBJDIR 		:= $(CURDIR)/app/obj_gtk
+
+Verzeichnis := $(foreach dir,$(SRCDIR),$(wildcard $(dir)/*))		# main, funkt1, funkt2
+cfiles 		:= $(foreach dir,$(Verzeichnis),$(wildcard $(dir)/*.c))	# main.c, /funktion1/funktion1.c
+nodir_cfiles:= $(notdir $(cfiles))
+# OBJ			:= $(addprefix $(OBJDIR)/, $(nodir_cfiles:c=o))
+OBJ			:= $(subst .c,.o, $(nodir_cfiles))
+
+$(info $(shell echo Hier___________________________ SRCDIR = "$(SRCDIR)" ___________________________))	
+$(info $(shell echo Hier___________________________ OBJDIR = "$(OBJDIR)" ___________________________))	
+$(info $(shell echo Hier___________________________ Verzeichnis = "$(Verzeichnis)"___________________________))	
+$(info $(shell echo Hier___________________________ cfiles = "$(cfiles)" ___________________________))
+$(info $(shell echo Hier___________________________ OBJ = "$(OBJ)" ___________________________))	
+
+all: main.exe
+ 
+main.exe: $(OBJ)  
+	gcc -o  $@ $(OBJDIR)/$^
+
+$(OBJ): %.o: %.c
+	gcc -c -g $< -o $(OBJDIR)/$@ 
+
+
+.PHONY: $(OBJ)
+
+clean:
+	rm *.o *.lib *.exe

@@ -1,0 +1,39 @@
+TARGET = main
+
+CC		= gcc
+CFLAGS 	= -g
+
+OUTDIR 	= ./bin
+DATADIR = ./data
+SUBDIR	= funktion1 funktion2
+DIR_OBJ = ./obj
+
+INCS = $(wildcard *.h $(foreach fd, $(SUBDIR), $(fd)/*.h))
+SRCS = $(wildcard *.c $(foreach fd, $(SUBDIR), $(fd)/*.c))
+NODIR_SRC = $(notdir $(SRCS))
+OBJS = $(addprefix $(DIR_OBJ)/, $(SRCS:c=o)) # obj/xxx.o obj/folder/xxx .o
+INC_DIRS = -I./ $(addprefix -I, $(SUBDIR))
+LIBS = -largp
+TARGET = all
+
+$(info $(shell echo Hier___________________________ SRCDIR = "$(INCS)" ___________________________))	
+$(info $(shell echo Hier___________________________ SRCS = "$(SRCS)" ___________________________))	
+$(info $(shell echo Hier___________________________ NODIR_SRC = "$(NODIR_SRC)"___________________________))	
+$(info $(shell echo Hier___________________________ OBJS = "$(OBJS)" ___________________________))	
+
+all: main.exe
+
+PHONY := main.exe
+
+main.exe: $(OBJS)
+	$(CC) -o $(OUTDIR)/$@ $(OBJS) $(LIB_DIRS) $(LIBS)
+
+$(DIR_OBJ)/%.o: %.c
+	mkdir -p $(@D)
+	$(CC) -o $@ -c $<
+
+PHONY += clean
+clean:
+	rm -rf $(OUTDIR)/* $(DATADIR)/* $(DIR_OBJ)/*
+
+    
