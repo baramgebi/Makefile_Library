@@ -1,0 +1,46 @@
+export LANG	= en
+# vpath	= /d/test/Makefile_Libary_Path_Debug/funktion1 
+# objects 	= funktion1.o funktion2.o
+
+
+CC       	= gcc
+CFLAGS 		= -c -g
+LDFLAGS		= -o
+LFLAGS		= -L/home/test -L../lib
+INCLUDE		= -I../include
+
+SRCDIR 		:= $(CURDIR)
+OBJDIR 		:= $(CURDIR)/app/obj_gtk
+
+Verzeichnis := $(foreach dir,$(SRCDIR),$(wildcard $(dir)/*))		# main, funkt1, funkt2
+cfiles 		:= $(foreach dir,$(Verzeichnis),$(wildcard $(dir)/*.c))	# main.c, /funktion1/funktion1.c
+# objects 	:= $(notdir $(wildcard $(addprefix $(ROOTDIR)/app/src/*,.c))))
+objects 	:= $(patsubst cfiles, $(OBJDIR)%.o, $(Verzeichnis))
+
+$(info $(shell echo Hier___________________________ SRCDIR = "$(SRCDIR)" ___________________________))	
+$(info $(shell echo Hier___________________________ OBJDIR = "$(OBJDIR)" ___________________________))	
+$(info $(shell echo Hier___________________________ Verzeichnis = "$(Verzeichnis)"___________________________))	
+$(info $(shell echo Hier___________________________ cfiles = "$(cfiles)" ___________________________))
+$(info $(shell echo Hier___________________________ objects = "$(objects)" ___________________________))					
+
+all: main.exe
+ 
+main.exe:  $(objects)
+	gcc -o  main.exe main.o funktion1.o
+
+$(objects):$(cfiles)
+	gcc -c -g $< -o $@
+
+# $(objects): %.o: %.c
+%.o: %.c
+  # gcc -c -g -o funktion1.o ./funktion1/funktion1.c
+	gcc -c -g -o $@          $<														
+																
+funktion.lib:
+	ar ruvs funktion.lib funktion1.o funktion2.o
+
+.PHONY: $(objects)
+	
+clean:
+	rm *.o *.lib *.exe
+	
